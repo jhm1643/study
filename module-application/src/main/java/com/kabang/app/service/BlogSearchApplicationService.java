@@ -6,7 +6,7 @@ import com.kabang.common.dto.response.BlogSearchResponse;
 import com.kabang.common.exception.ApiException;
 import com.kabang.common.exception.ApiExceptionCode;
 import com.kabang.domain.mapper.BlogKakaoMapper;
-import com.kabang.domain.service.SearchKeywordService;
+import com.kabang.domain.service.SearchKeywordHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class BlogSearchApplicationService {
 
     private final ExternalApiClient externalApiClient;
-    private final SearchKeywordService searchKeywordService;
+    private final SearchKeywordHistoryService searchKeywordHistoryService;
 
     private final BlogKakaoMapper blogKakaoMapper;
 
@@ -34,7 +34,7 @@ public class BlogSearchApplicationService {
             }
         }
 
-        searchKeywordService.createSearchKeyword(accessId, request.getKeyword());
+        searchKeywordHistoryService.createSearchKeyword(accessId, request.getKeyword());
         return response;
     }
 }

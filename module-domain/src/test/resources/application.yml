@@ -1,0 +1,4 @@
+springfox:
+  documentation:
+    auto-startup: false
+    enabled: false

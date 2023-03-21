@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @SequenceGenerator(
-        name = "search_keyword_hits_seq_generator",
-        sequenceName = "search_keyword_hits_seq",
+        name = "search_keyword_history_seq_generator",
+        sequenceName = "search_keyword_history_seq",
         allocationSize = 1
 )
 @Builder
@@ -17,18 +17,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
-        name = "search_keyword",
+        name = "search_keyword_history",
         uniqueConstraints = {
-                @UniqueConstraint(name = "search_keyword_hits_uk01", columnNames = {"access_id", "keyword"})
+                @UniqueConstraint(name = "search_keyword_history_uk01", columnNames = {"access_id", "keyword"})
         },
         indexes = {
-                @Index(name = "search_keyword_hits_in01", columnList = "keyword"),
-                @Index(name = "search_keyword_hits_in02", columnList = "check_yn")
+                @Index(name = "search_keyword_history_in01", columnList = "keyword"),
+                @Index(name = "search_keyword_history_in02", columnList = "check_yn")
         })
-public class SearchKeyword {
+public class SearchKeywordHistory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "search_keyword_hits_seq_generator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "search_keyword_history_seq_generator")
     @Column(name = "id")
     private long id;
 
@@ -39,13 +39,14 @@ public class SearchKeyword {
     private String keyword;
 
     @Column(name = "check_yn")
+    @Enumerated(EnumType.STRING)
     private FlagType checkYn;
 
     @Column(name = "createDt")
     private LocalDateTime createDt;
 
-    public static SearchKeyword create(String accessId, String keyword){
-        return SearchKeyword.builder()
+    public static SearchKeywordHistory create(String accessId, String keyword){
+        return SearchKeywordHistory.builder()
                 .accessId(accessId)
                 .keyword(keyword)
                 .checkYn(FlagType.N)
@@ -55,5 +56,8 @@ public class SearchKeyword {
 
     public void updateCheck(FlagType checkYn){
         this.checkYn = checkYn;
+    }
+    public void updateCreateDt(LocalDateTime createDt) {
+        this.createDt = createDt;
     }
 }

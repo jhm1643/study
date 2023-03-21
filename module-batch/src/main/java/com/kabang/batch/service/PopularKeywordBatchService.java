@@ -1,9 +1,10 @@
 package com.kabang.batch.service;
 
+import com.kabang.common.dto.KeywordHitsDto;
 import com.kabang.common.dto.type.FlagType;
-import com.kabang.domain.entity.PopularKeyword;
-import com.kabang.domain.repository.PopularKeywordRepository;
-import com.kabang.domain.repository.SearchKeywordRepository;
+import com.kabang.domain.entity.SearchKeywordHits;
+import com.kabang.domain.repository.SearchKeywordHitsRepository;
+import com.kabang.domain.repository.SearchKeywordHistoryHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,42 +19,54 @@ public class PopularKeywordBatchService {
     @Value("${com.kabang.batch.search-keyword-store-expire-day}")
     private long searchKeywordStoreExpireDay;
 
-    private final PopularKeywordRepository popularKeywordRepository;
-    private final SearchKeywordRepository searchKeywordRepository;
+    @Value("${com.kabang.batch.merge-popular-keyword-batch-size}")
+    private long mergePopularKeywordBatchSize;
+
+    @Value("${com.kabang.batch.remove-expire-data-batch-size}")
+    private long removeExpireDataBatchSize;
+
+    private final SearchKeywordHitsRepository searchKeywordHitsRepository;
+    private final SearchKeywordHistoryHistoryRepository searchKeywordHistoryRepository;
 
     @Transactional
     public void mergePopularKeyword(){
-        long count = searchKeywordRepository.countHitsKeywordByCheck(FlagType.N);
-
+        long count = searchKeywordHistoryRepository.countHitsKeywordByCheck(FlagType.N);
         for (long i = 0; i <= count; i++) {
 
             if(count == 0){
                 break;
-            }else if(count < 500){
+            }else if(count < mergePopularKeywordBatchSize){
                 i = count;
-            }else if(count - i < 500){
+            }else if(count - i < mergePopularKeywordBatchSize){
                 i = count - i;
             }else{
-                i += 500;
+                i += mergePopularKeywordBatchSize;
             }
 
-            searchKeywordRepository.findHitsKeywordByCheck(FlagType.N, i).stream()
-                    .forEach(dto -> {
-                        popularKeywordRepository.findByKeyword(dto.getKeyword())
-                                .ifPresentOrElse(
-                                        popularKeyword -> popularKeyword.updateHitCount(dto.getHitsCount()),
-                                        () -> popularKeywordRepository.save(PopularKeyword.create(dto.getKeyword(), dto.getHitsCount())));
+            for (KeywordHitsDto keywordHitsDto : searchKeywordHistoryRepository.findHitsKeywordByCheck(FlagType.N, i)) {
+                searchKeywordHitsRepository.findByKeyword(keywordHitsDto.getKeyword())
+                        .ifPresentOrElse(
+                                searchKeywordHits -> searchKeywordHits.updateHitCount(keywordHitsDto.getHitsCount()),
+                                () -> searchKeywordHitsRepository.save(SearchKeywordHits.create(keywordHitsDto.getKeyword(), keywordHitsDto.getHitsCount())));
 
-                        searchKeywordRepository.findByKeyword(dto.getKeyword()).stream()
-                                .forEach(searchKeyword -> searchKeyword.updateCheck(FlagType.Y));
+                searchKeywordHistoryRepository.findByKeyword(keywordHitsDto.getKeyword()).stream()
+                        .forEach(searchKeyword -> searchKeyword.updateCheck(FlagType.Y));
 
-                        searchKeywordRepository.flush();
-                        popularKeywordRepository.flush();
-                    });
+                searchKeywordHistoryRepository.flush();
+                searchKeywordHitsRepository.flush();
+            }
         }
     }
 
+    @Transactional
     public void removeExpireData(){
-        searchKeywordRepository.findByCheckYnAndCreateDtBefore(FlagType.Y, LocalDateTime.now().minusDays(searchKeywordStoreExpireDay));
+        while(true){
+            var searchKeywordHistoryIds = searchKeywordHistoryRepository.findIdsByCheckYnAndCreateDtBefore(FlagType.Y, LocalDateTime.now().minusDays(searchKeywordStoreExpireDay), removeExpireDataBatchSize);
+            if(searchKeywordHistoryIds.isEmpty()){
+                break;
+            }else{
+                searchKeywordHistoryRepository.deleteAllByIdInBatch(searchKeywordHistoryIds);
+            }
+        }
     }
 }

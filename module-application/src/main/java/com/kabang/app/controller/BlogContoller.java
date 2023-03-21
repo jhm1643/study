@@ -30,10 +30,4 @@ public class BlogContoller {
     ){
         return ResponseEntity.ok(blogSearchApplicationService.findBlog(accessId, request));
     }
-
-//    @ApiOperation(value = "인기 검색어 목록")
-//    @GetMapping("/popular-keyword")
-//    public ResponseEntity<List<PopularKeywordResponse>> findKakaoBlog(){
-//        return ResponseEntity.ok(searchKeywordService.findPopularKeywordTop10());
-//    }
 }

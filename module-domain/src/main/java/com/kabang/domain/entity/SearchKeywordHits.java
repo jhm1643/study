@@ -6,8 +6,8 @@ import javax.persistence.*;
 
 @Entity
 @SequenceGenerator(
-        name = "popular_keyword_seq_generator",
-        sequenceName = "popular_keyword_seq",
+        name = "search_keyword_hits_seq_generator",
+        sequenceName = "search_keyword_hits_seq",
         allocationSize = 1
 )
 @Builder
@@ -15,15 +15,15 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
-        name = "popular_keyword",
+        name = "search_keyword_hits",
         indexes = {
-                @Index(name = "popular_keyword_in01", columnList = "keyword"),
-                @Index(name = "popular_keyword_in02", columnList = "hits_count desc")
+                @Index(name = "search_keyword_hits_in01", columnList = "keyword"),
+                @Index(name = "search_keyword_hits_in02", columnList = "hits_count desc")
         })
-public class PopularKeyword {
+public class SearchKeywordHits {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "popular_keyword_seq_generator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "search_keyword_hits_seq_generator")
     @Column(name = "id")
     private long id;
 
@@ -33,8 +33,8 @@ public class PopularKeyword {
     @Column(name = "hits_count")
     private Long hitsCount;
 
-    public static PopularKeyword create(String keyword, Long hitCount){
-        return PopularKeyword.builder()
+    public static SearchKeywordHits create(String keyword, Long hitCount){
+        return SearchKeywordHits.builder()
                 .keyword(keyword)
                 .hitsCount(hitCount)
                 .build();

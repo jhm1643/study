@@ -1,7 +1,7 @@
 package com.kabang.app.controller;
 
 import com.kabang.common.dto.response.PopularKeywordResponse;
-import com.kabang.domain.service.PopularKeywordService;
+import com.kabang.domain.service.SearchKeywordHitsService;
 import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +17,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PopularKeywordController {
 
-    private final PopularKeywordService popularKeywordService;
+    private final SearchKeywordHitsService searchKeywordHitsService;
 
     @GetMapping("/search/blog")
     public ResponseEntity<List<PopularKeywordResponse>> findBlogTop10PopularKeywords(){
-        return ResponseEntity.ok(popularKeywordService.findTop10PopularKeyword());
+        return ResponseEntity.ok(searchKeywordHitsService.findTop10PopularKeyword());
     }
 }

@@ -1,0 +1,18 @@
+springfox:
+  documentation:
+    auto-startup: false
+    enabled: false
+
+api:
+  external:
+    kakao:
+      auth-key: abeb874a895f679ebd682dcb8b69b51e
+      domain: https://dapi.kakao.com
+      path:
+        blog: /v2/search/blog
+    naver:
+      client-id: 5oZN3bOpqVvthjgZXlar
+      client-secret: KbKhrD5W5R
+      domain: https://openapi.naver.com
+      path:
+        blog: /v1/search/blog.json

@@ -1,0 +1,15 @@
+springfox:
+  documentation:
+    auto-startup: false
+    enabled: false
+
+com.kabang:
+  scheduling:
+    cron:
+      merge-popular-keyword: 0/10 * * * * ?
+      remove-search-keyword: 0/20 * * * * ?
+  batch:
+    search-keyword-store-expire-day: 1
+    merge-popular-keyword-batch-size: 500
+    remove-expire-data-batch-size: 50
+

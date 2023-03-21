@@ -1,13 +1,13 @@
 package com.kabang.common.dto;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Setter
 @Getter
-public class CurrentTopSearchKeywordDto {
+public class KeywordHitsDto {
 
     private String keyword;
-    private long hits;
+    private long hitsCount;
 }

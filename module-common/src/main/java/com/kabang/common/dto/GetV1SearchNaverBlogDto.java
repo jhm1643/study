@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,7 +18,7 @@ public class GetV1SearchNaverBlogDto {
     private int total;
 
     @ApiModelProperty("겸색 결과 목록")
-    private Set<Item> items = new HashSet<>();
+    private List<Item> items = new ArrayList<>();
 
     @Getter
     @Setter
