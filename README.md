@@ -1,5 +1,6 @@
 jar download link : https://drive.google.com/drive/folders/0B9CM2xw7Q7uIQVktQmpwTTZhS0k?resourcekey=0-kUNH3dTiDylTwYcZps52QA&usp=share_link
-
+   -> app으로 실행되는 모듈은 module-application과 module-batch 2개 입니다. h2 database server로 사용되고 있는 module-application이 로드가 완료되면 module-batch를 실행합니다.
+swagger url : http:
 1. 외부 라이브러리 및 오픈소스 사용 목적
    1. spring batch
       1. 검색 키워드 히스토리 데이터에서 검색 키워드 조회수 데이터로 마이그레이션하기 위해 사용
