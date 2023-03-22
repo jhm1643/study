@@ -21,6 +21,6 @@
       1. 특정 사용자의 조회수 어뷰징을 방지하기 위해 추가하였으며, 사용자를 식별하기 위한 key값이다.(비회원일 경우 client-ip 기준으로 값을 정하면 될 것 같다.)
    2. 배치
       1. 현재는 테스트를 위해 스케쥴링 단위를 초단위로 설정하였습니다.
-      2. spring batch는 사용 경험이 없어 학습 상태가 좋지 않아 tasket 형태로 구현하였습니다.
+      2. spring batch는 사용 경험이 없어 학습 상태가 좋지 않아 tasklet 형태로 구현하였습니다.
       3. 실제 운영 서버일 경우 배치 처리 사이즈 및 스케쥴링 시간 조정이 필요합니다.
    3. app으로 실행되는 모듈은 module-application과 module-batch 2개 입니다. h2 database server로 사용되고 있는 module-application부터 실행하고 실행이 완료되면 module-batch를 실행합니다.
