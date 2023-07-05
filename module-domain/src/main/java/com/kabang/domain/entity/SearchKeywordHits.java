@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @SequenceGenerator(
-        name = "search_keyword_hits_seq_generator",
+        name = "search_keyword_hits_seq",
         sequenceName = "search_keyword_hits_seq",
         allocationSize = 1
 )
@@ -23,11 +23,11 @@ import javax.persistence.*;
 public class SearchKeywordHits {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "search_keyword_hits_seq_generator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "search_keyword_hits_seq")
     @Column(name = "id")
     private long id;
 
-    @Column(name = "keyword")
+    @Column(name = "keyword", unique = true)
     private String keyword;
 
     @Column(name = "hits_count")
@@ -40,7 +40,8 @@ public class SearchKeywordHits {
                 .build();
     }
 
-    public void updateHitCount(Long hitCount){
+    public SearchKeywordHits updateHitCount(Long hitCount){
         this.hitsCount += hitCount;
+        return this;
     }
 }

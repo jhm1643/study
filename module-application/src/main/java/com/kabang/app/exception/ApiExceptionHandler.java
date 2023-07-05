@@ -78,7 +78,7 @@ public class ApiExceptionHandler {
                 .status(exception.getApiExceptionCode().getHttpStatus())
                 .body(ErrorResponse.builder()
                         .code(exception.getApiExceptionCode().getCode())
-                        .message(exception.getMessage())
+                        .message(exception.getApiExceptionCode().getMessage())
                         .build());
     }
 

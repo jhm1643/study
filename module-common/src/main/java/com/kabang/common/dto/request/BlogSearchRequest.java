@@ -7,12 +7,15 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @Setter
 @ApiModel(value = "블로그 검색 요청")
 public class BlogSearchRequest {
 
     @ApiModelProperty("keyword")
+    @NotBlank(message = "keyword 값은 필수 입니다.")
     private String keyword;
 
     @ApiModelProperty("정렬")

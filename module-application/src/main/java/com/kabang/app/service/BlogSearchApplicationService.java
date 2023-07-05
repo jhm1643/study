@@ -1,17 +1,19 @@
 package com.kabang.app.service;
 
-import com.kabang.external.client.ExternalApiClient;
 import com.kabang.common.dto.request.BlogSearchRequest;
 import com.kabang.common.dto.response.BlogSearchResponse;
 import com.kabang.common.exception.ApiException;
 import com.kabang.common.exception.ApiExceptionCode;
 import com.kabang.domain.mapper.BlogKakaoMapper;
 import com.kabang.domain.service.SearchKeywordHistoryService;
+import com.kabang.external.client.ExternalApiClient;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BlogSearchApplicationService {
 
     private final ExternalApiClient externalApiClient;
@@ -19,7 +21,7 @@ public class BlogSearchApplicationService {
 
     private final BlogKakaoMapper blogKakaoMapper;
 
-    public BlogSearchResponse findBlog(String accessId, BlogSearchRequest request){
+    public BlogSearchResponse findBlog(BlogSearchRequest request){
         BlogSearchResponse response = null;
         var kakaoApiResponse = externalApiClient.getV2SearchKakaoBlog(request);
 
@@ -34,7 +36,7 @@ public class BlogSearchApplicationService {
             }
         }
 
-        searchKeywordHistoryService.createSearchKeyword(accessId, request.getKeyword());
+        searchKeywordHistoryService.saveSearchKeywordHistory(request.getKeyword());
         return response;
     }
 }

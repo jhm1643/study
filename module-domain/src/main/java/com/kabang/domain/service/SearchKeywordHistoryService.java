@@ -1,7 +1,7 @@
 package com.kabang.domain.service;
 
 import com.kabang.domain.entity.SearchKeywordHistory;
-import com.kabang.domain.repository.SearchKeywordHistoryHistoryRepository;
+import com.kabang.domain.repository.SearchKeywordHistoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -13,19 +13,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class SearchKeywordHistoryService {
 
-    private final SearchKeywordHistoryHistoryRepository searchKeywordHistoryRepository;
+    private final SearchKeywordHistoryRepository searchKeywordHistoryRepository;
 
     @Transactional
     @Async
-    public void createSearchKeyword(String accessId, String keyword){
+    public void saveSearchKeywordHistory(String keyword){
         if(keyword.contains(" ")) {
             keyword = keyword.split(" ")[1];
         }
 
         final String realKeyword = keyword;
-        var existSearchKeyword = searchKeywordHistoryRepository.existsByAccessIdAndKeyword(accessId, keyword);
-        if(existSearchKeyword == false){
-            searchKeywordHistoryRepository.save(SearchKeywordHistory.create(accessId, realKeyword));
-        }
+        searchKeywordHistoryRepository.save(SearchKeywordHistory.create(realKeyword));
     }
 }

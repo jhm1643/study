@@ -1,11 +1,10 @@
 package com.kabang.batch.scheduler;
 
-import com.kabang.batch.job.PopularKeywordJob;
-import com.kabang.batch.job.SearchKeywordJob;
+import com.kabang.batch.job.AggregatePopularKeywordsJob;
+import com.kabang.batch.job.KeywordHistoryExpirationJob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.JobParameter;
-import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
@@ -13,8 +12,8 @@ import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteExcep
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Component
@@ -22,17 +21,16 @@ import java.util.Map;
 public class Scheduler {
 
     private final JobLauncher jobLauncher;
-    private final PopularKeywordJob popularKeywordJob;
-    private final SearchKeywordJob searchKeywordJob;
+    private final AggregatePopularKeywordsJob aggregatePopularKeywordsJob;
+    private final KeywordHistoryExpirationJob keywordHistoryExpirationJob;
 
-    @Scheduled(cron = "${com.kabang.scheduling.cron.merge-popular-keyword}")
-    public void mergePopularKeywordBatchStart() {
-        Map<String, JobParameter> confMap = new HashMap<>();
-        confMap.put("time", new JobParameter(System.currentTimeMillis()));
-        JobParameters jobParameters = new JobParameters(confMap);
-
+    //10초 마다
+    @Scheduled(cron = "${com.kabang.scheduling.cron.aggregate-popular-keywords-batch}")
+    public void keywordHitsCountBatchStart() throws Exception {
         try {
-            jobLauncher.run(popularKeywordJob.mergePopularKeywordJob(), jobParameters);
+            jobLauncher.run(aggregatePopularKeywordsJob.aggregatePopularKeywordsBatchJob(), new JobParametersBuilder()
+                    .addString("DATE_TIME", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                    .toJobParameters());
         } catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException
                 | JobParametersInvalidException | org.springframework.batch.core.repository.JobRestartException e) {
 
@@ -40,14 +38,13 @@ public class Scheduler {
         }
     }
 
-    @Scheduled(cron = "${com.kabang.scheduling.cron.remove-search-keyword}")
-    public void searchKeywordBatchStart() {
-        Map<String, JobParameter> confMap = new HashMap<>();
-        confMap.put("time", new JobParameter(System.currentTimeMillis()));
-        JobParameters jobParameters = new JobParameters(confMap);
-
+    //20초 마다
+    @Scheduled(cron = "${com.kabang.scheduling.cron.keyword-history-expiration-batch}")
+    public void keywordHistoryExpirationBatchStart() throws Exception {;
         try {
-            jobLauncher.run(searchKeywordJob.removeExpireDataJob(), jobParameters);
+            jobLauncher.run(keywordHistoryExpirationJob.keywordHistoryExpirationBatchJob(), new JobParametersBuilder()
+                    .addString("DATE_TIME", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                    .toJobParameters());
         } catch (JobExecutionAlreadyRunningException | JobInstanceAlreadyCompleteException
                 | JobParametersInvalidException | org.springframework.batch.core.repository.JobRestartException e) {
 

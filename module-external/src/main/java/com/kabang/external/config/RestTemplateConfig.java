@@ -34,14 +34,14 @@ public class RestTemplateConfig {
     @Bean
     public RestTemplate kakaoAuthRestTemplate(){
         var httpClient = HttpClientBuilder.create()
-                .setMaxConnTotal(100)    //최대 오픈되는 커넥션 수
-                .setMaxConnPerRoute(5)   //IP, 포트 1쌍에 대해 수행할 커넥션 수
+                .setMaxConnTotal(500)    //최대 오픈되는 커넥션 수
+                .setMaxConnPerRoute(500)   //IP, 포트 1쌍에 대해 수행할 커넥션 수
                 .setDefaultHeaders(List.of(new BasicHeader(HttpHeaders.AUTHORIZATION, "KakaoAK " + kakaoApiAuthKey)))
                 .build();
 
         var factory = new HttpComponentsClientHttpRequestFactory();
-        factory.setReadTimeout(5000);       //읽기시간초과, ms
-        factory.setConnectTimeout(3000);    //연결시간초과, ms
+        factory.setReadTimeout(30000);       //읽기시간초과, ms
+        factory.setConnectTimeout(20000);    //연결시간초과, ms
         factory.setHttpClient(httpClient);
 
         var restTemplate = new RestTemplate();
@@ -58,8 +58,8 @@ public class RestTemplateConfig {
                 new BasicHeader("X-Naver-Client-Secret", naverApiClientSecret)
         );
         var httpClient = HttpClientBuilder.create()
-                .setMaxConnTotal(100)    //최대 오픈되는 커넥션 수
-                .setMaxConnPerRoute(5)   //IP, 포트 1쌍에 대해 수행할 커넥션 수
+                .setMaxConnTotal(500)    //최대 오픈되는 커넥션 수
+                .setMaxConnPerRoute(500)   //IP, 포트 1쌍에 대해 수행할 커넥션 수
                 .setDefaultHeaders(authHeader)
                 .build();
 

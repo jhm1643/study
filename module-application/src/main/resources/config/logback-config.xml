@@ -9,8 +9,9 @@
     <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
     <Logger name="org.hibernate.SQL" level="ERROR"/>
     <Logger name="org.hibernate.type" level="ERROR"/>
+    <logger name="org.apache.http" level="DEBUG"/>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>

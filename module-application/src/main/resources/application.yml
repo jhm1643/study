@@ -7,7 +7,7 @@ spring:
     datasource:
         hikari:
             driver-class-name: org.h2.Driver
-            jdbc-url: jdbc:h2:~/test
+            jdbc-url: jdbc:h2:~/test;mode=MySQL
             password: ''
             username: sa
     h2:
@@ -44,4 +44,18 @@ api:
             path:
                 blog: /v1/search/blog.json
 
-
+resilience4j:
+    circuitbreaker:
+        configs:
+            default:  # 기본 config 명
+                slidingWindowType: COUNT_BASED
+                slidingWindowSize: 20
+                minimumNumberOfCalls: 10
+                failureRateThreshold: 50
+                permittedNumberOfCallsInHalfOpenState: 5
+                waitDurationInOpenState: 10s
+        instances:
+            circuit-kakao-blog-api:
+                baseConfig: default
+            circuit-naver-blog-api:
+                baseConfig: default

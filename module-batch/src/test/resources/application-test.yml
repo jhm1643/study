@@ -1,11 +1,8 @@
-logging:
-  config: classpath:config/logback-config.xml
-
 spring:
   datasource:
     hikari:
       driver-class-name: org.h2.Driver
-      jdbc-url: jdbc:h2:tcp://localhost:9092/~/test
+      jdbc-url: jdbc:h2:~/test;mode=MySQL
       password: ''
       username: sa
   batch:
@@ -13,15 +10,11 @@ spring:
       enabled: false
     jdbc:
       initialize-schema: ALWAYS
-  task:
-    scheduling:
-      pool:
-        size: 2
+  jpa:
+    hibernate:
+      ddl-auto: create
   main:
     allow-bean-definition-overriding: true
-
-server:
-    port: 7072
 
 springfox:
   documentation:
@@ -31,10 +24,10 @@ springfox:
 com.kabang:
   scheduling:
     cron:
-      aggregate-popular-keywords-batch: 0/5 * * * * ?
-      keyword-history-expiration-batch: 0/5 * * * * ?
+      aggregate-popular-keywords-batch: 0/10 * * * * ?
+      keyword-history-expiration-batch: 0/20 * * * * ?
   batch:
-    search-keyword-store-expire-day: 1
+    search-keyword-store-expire-day: -1 #테스트를 위한 셋팅
     aggregate-popular-keywords:
       chunk-size: 50
       page-size: 20

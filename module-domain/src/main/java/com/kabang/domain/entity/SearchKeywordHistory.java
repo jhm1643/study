@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @SequenceGenerator(
-        name = "search_keyword_history_seq_generator",
+        name = "search_keyword_history_seq",
         sequenceName = "search_keyword_history_seq",
         allocationSize = 1
 )
@@ -18,9 +18,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(
         name = "search_keyword_history",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "search_keyword_history_uk01", columnNames = {"access_id", "keyword"})
-        },
         indexes = {
                 @Index(name = "search_keyword_history_in01", columnList = "keyword"),
                 @Index(name = "search_keyword_history_in02", columnList = "check_yn")
@@ -28,12 +25,9 @@ import java.time.LocalDateTime;
 public class SearchKeywordHistory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "search_keyword_history_seq_generator")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "search_keyword_history_seq")
     @Column(name = "id")
     private long id;
-
-    @Column(name = "access_id")
-    private String accessId;
 
     @Column(name = "keyword")
     private String keyword;
@@ -42,12 +36,11 @@ public class SearchKeywordHistory {
     @Enumerated(EnumType.STRING)
     private FlagType checkYn;
 
-    @Column(name = "createDt")
+    @Column(name = "create_dt")
     private LocalDateTime createDt;
 
-    public static SearchKeywordHistory create(String accessId, String keyword){
+    public static SearchKeywordHistory create(String keyword){
         return SearchKeywordHistory.builder()
-                .accessId(accessId)
                 .keyword(keyword)
                 .checkYn(FlagType.N)
                 .createDt(LocalDateTime.now())
